@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+runs/
+checkpoints/
+*.pth
+*.pt
+# datasets are not redistributed, but their download instructions are
+data/*
+!data/README.md
+# training logs; the JSON metrics under results/repro/ are kept
+*.log

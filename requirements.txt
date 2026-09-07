@@ -1,0 +1,12 @@
+torch>=2.0
+torchvision>=0.15
+numpy>=1.24
+pillow>=9.0
+# frozen CLIP image/text encoders
+open_clip_torch>=2.24
+# LEVIR-CC ships as an HDF5 bundle; Dubai-CC does not need it
+h5py>=3.8
+# SSM fusion variants only; requires a CUDA GPU
+mamba-ssm>=2.0
+# optional, for the --flops estimate in scripts/benchmark_efficiency.py
+fvcore>=0.1.5
