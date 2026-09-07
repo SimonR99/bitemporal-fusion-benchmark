@@ -95,20 +95,22 @@ the best epoch, not the last (`--select final` overrides). This matters: on
 LEVIR-CC validation loss bottoms out well before epoch 30 while training loss
 keeps falling, so the final epoch is not the best one.
 
-A single Dubai-CC run takes about a minute and reproduces the paper:
+A Dubai-CC run takes about two minutes, LEVIR-CC about half an hour:
 
 | Change queries, TBF, 30 epochs | R@1 | R@5 | R@10 | time |
 |---|---:|---:|---:|---:|
 | Dubai-CC paper (10 seeds) | 4.82 ± 1.17 | 19.73 ± 1.63 | 33.63 ± 1.74 | — |
-| Dubai-CC this repo (seed 1) | 4.95 | 20.41 | 32.99 | 1.1 min |
+| Dubai-CC this repo (seed 1) | 5.57 | 21.03 | 35.67 | 1.6 min |
 | LEVIR-CC paper (10 seeds) | 2.06 ± 0.42 | 8.29 ± 0.94 | 14.41 ± 1.39 | — |
-| LEVIR-CC this repo (seed 1) | 0.77 | 3.86 | 7.51 | 16.7 min |
+| LEVIR-CC this repo (seed 1) | 1.83 | 7.74 | 13.61 | 29.4 min |
 
-Dubai-CC lands within half a standard deviation of the paper. **LEVIR-CC does
-not yet reproduce** — it learns (15× the random baseline) but sits ~2.5× low;
-see [`results/paper_tables.md`](results/paper_tables.md) for the remaining known
-differences. The paper reports mean ± std over seeds 1–10, so expect a single
-run to land inside that spread rather than on the mean.
+Both land inside the paper's seed spread. The paper reports mean ± std over
+seeds 1–10 and that spread is wide — on LEVIR-CC ±0.4 on an R@1 of 2.06, about
+20% relative — so a single run should be judged against the distribution, not
+against the mean. Seed 1 in particular runs below average.
+
+[`results/reproduction.md`](results/reproduction.md) is a full audit of what
+this repository regenerates and how closely, including the parts it cannot.
 
 Build a model directly:
 

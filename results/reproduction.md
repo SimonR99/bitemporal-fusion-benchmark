@@ -13,9 +13,9 @@ against the ten-seed mean. Seed 1 in particular is a below-average seed.
 |---|---|
 | Table 1, parameters | **Exact**, all eight modules |
 | Table 1, FLOPs | Within ~10% for seven of eight; TFF unreconciled |
-| Table 1, latency | Hardware-dependent; see below |
+| Table 1, latency | Non-SSM modules match; SSM modules faster than published |
 | Table 2, caption metrics | **Not reproducible here** — the evaluator was not ported |
-| Table 3, Recall@K | Protocol confirmed; retrained values below |
+| Table 3, Recall@K | **Reproduces** — protocol exact, retraining inside the seed spread |
 | Table 4, cascade | **Exact**, all four rows |
 | Latency vs. length | Transcribed from the reference output; needs an idle GPU |
 | Backbone robustness (§4.5) | **Not ported** — only CLIP ViT-B/16 and B/32 |
@@ -125,11 +125,34 @@ Concatenation Transformer 2.28±0.25; the paper quotes sample standard
 deviations, which are a factor sqrt(10/9) larger).
 
 Retraining from scratch is a weaker test than that, because the seed spread is
-wide and no two implementations share an RNG stream. For reference, the spread
-across the ten published TBF seeds on LEVIR-CC is R@1 2.06±0.40, and **seed 1
-alone gives 1.60 / 7.51 / 13.36** — well under the mean. A single retrained run
-should be judged against the distribution, not against the mean and not against
-one seed's exact value.
+wide and no two implementations share an RNG stream. A retrained run should be
+judged against the distribution, not against the mean and not against one seed's
+exact value. Retraining TBF at seed 1 here, on the full gallery:
+
+| TBF, seed 1 | R@1 | R@5 | R@10 |
+|---|---:|---:|---:|
+| LEVIR-CC, this repo | 1.83 | 7.74 | 13.61 |
+| LEVIR-CC, reference at the same seed | 1.60 | 7.51 | 13.36 |
+| LEVIR-CC, paper (10 seeds) | 2.06 ± 0.42 | 8.29 ± 0.94 | 14.41 ± 1.39 |
+| Dubai-CC, this repo | 5.57 | 21.03 | 35.67 |
+| Dubai-CC, paper (10 seeds) | 4.82 ± 1.17 | 19.73 ± 1.63 | 33.63 ± 1.74 |
+
+LEVIR-CC lands just above the reference's own seed 1 and about 0.6 sigma under
+the ten-seed mean on all three cutoffs; Dubai-CC lands above the mean, within
+1.2 sigma. Subtraction on Dubai-CC gives 4.12 / 12.99 / 24.95 against a
+published 3.11±0.82 / 14.70±2.38 / 26.33±2.79.
+
+The training curve is the tighter check, since the reference's own logs survive.
+At seed 1 on LEVIR-CC this repository now gives train/val 3.0118 / 3.1411 after
+epoch 1 and 2.5584 / 3.0214 after epoch 2, against the reference's 3.0455 /
+3.1079 and 2.5841 / 2.9947; best validation loss 2.8131 against 2.8355. Before
+the encoder fixes those first-epoch figures were 3.3776 / 3.4081.
+
+`scripts/cascade.py` reproduces the paper's Dubai-CC cascade claim — that the
+LEVIR-CC gain does not carry over but quality parity does. At N=50 it gives
+5.77 / 21.03 / 33.61 against full fusion's 5.57 / 21.03 / 35.67 at 2.4x lower
+cost: R@1 and R@5 matched, R@10 about two points lower. The paper reports parity
+on R@1/R@5, roughly one point lower R@10, and 2.6x.
 
 ## Table 4
 
